@@ -1,0 +1,97 @@
+ext {
+    GitHome = System.getenv()['GIT_HOME']
+    mavenVersionStr = ""
+    //主版本
+    versionPatch = 1;
+
+    //次版本
+    versionMajor = 2;
+
+    //版本补丁数
+    versionMinor = 1;
+
+    milestone = "M2"
+
+    currentVersionString =  "1.0.0"
+}
+
+
+def gitSHAshort = "${rootProject.ext.GitHome}/git rev-parse --short HEAD".execute([], project.rootDir).text.trim()
+println "${rootProject.ext.GitHome}/git HEAD SHA:${gitSHAshort}"
+def versionPatchSHALines = "${rootProject.ext.GitHome}/git rev-list HEAD --count".execute([], project.rootDir).text.trim()
+versionPatch = Integer.parseInt(versionPatchSHALines) + 72
+
+//版本字串
+currentVersionString = "${versionMajor}.${versionMinor}.${rootProject.ext.versionPatch}_${gitSHAshort}";
+ext.mavenVersionStr = "${versionMajor}.${versionMinor}.${rootProject.ext.versionPatch}";
+
+task GetVersion() {
+    println mavenVersionStr
+    println "Project: ${project.name} ===> Current Version String is:  ${currentVersionString}, this will be showed in application information on your phone.";
+    println "Version patches: ${rootProject.ext.versionPatch} lines"
+}
+
+gradle.buildFinished { result ->
+    println "======================================================"
+    println "构建完成!"
+    println "\t$appName 版本号: $currentVersionString "
+    println "\tMaven 版本号: $mavenVersionStr"
+    println "======================================================"
+}
+
+gradle.taskGraph.whenReady { graph ->
+    println graph
+}
+
+
+ext {
+    compileSDKVersion = 27
+    buildToolsVersion = "27.0.3"
+    minSDKVersion = 16
+    targetSDKVersion = 23
+    versionCode = 30
+    versionName = "2.0"
+
+    supportLibraryVersion = "27.0.2"
+    ijkplayer = "0.7.9"
+    DanmakuFlameMaster = '0.6.4'
+
+    transitionseverywhere = '1.7.0'
+
+    //DataLibraries
+    videocache = '2.6.4'
+    leakcanary = '1.5'
+
+    androidSupportLibrary = [
+            appcompatV7   : "com.android.support:appcompat-v7:${supportLibraryVersion}",
+            design        : "com.android.support:design:${supportLibraryVersion}",
+            percent       : "com.android.support:percent:${supportLibraryVersion}",
+            cardviewV7    : "com.android.support:cardview-v7:${supportLibraryVersion}",
+            gridlayoutV7  : "com.android.support:gridlayout-v7:${supportLibraryVersion}",
+            recyclerviewV7: "com.android.support:recyclerview-v7:${supportLibraryVersion}",
+            annotations   : "com.android.support:support-annotations:${supportLibraryVersion}",
+            preference    : "com.android.support:preference-v7:${supportLibraryVersion}",
+            paletteV7     : "com.android.support:palette-v7:${supportLibraryVersion}",
+            vectorDrawable: "com.android.support:support-vector-drawable:${supportLibraryVersion}",
+    ]
+
+    viewDependencies = [
+            ijkplayer_java       : "tv.danmaku.ijk.media:ijkplayer-java:${ijkplayer}",
+            ijkplayer_armv7a     : "tv.danmaku.ijk.media:ijkplayer-armv7a:${ijkplayer}",
+            ijkplayer_armv5      : "tv.danmaku.ijk.media:ijkplayer-armv5:${ijkplayer}",
+            ijkplayer_arm64      : "tv.danmaku.ijk.media:ijkplayer-arm64:${ijkplayer}",
+            ijkplayer_x86_64     : "tv.danmaku.ijk.media:ijkplayer-x86_64:${ijkplayer}",
+            ijkplayer_x86        : "tv.danmaku.ijk.media:ijkplayer-x86:${ijkplayer}",
+            ijkplayer_exo        : "tv.danmaku.ijk.media:ijkplayer-exo:${ijkplayer}",
+            transitionseverywhere: "com.andkulikov:transitionseverywhere:${transitionseverywhere}",
+            DanmakuFlameMaster   : "com.github.ctiao:DanmakuFlameMaster:${DanmakuFlameMaster}",
+            ndkbitmap_armv7a     : "com.github.ctiao:ndkbitmap-armv7a:${DanmakuFlameMaster}",
+            ndkbitmap_armv5      : "com.github.ctiao:ndkbitmap-armv5:${DanmakuFlameMaster}",
+            ndkbitmap_x86        : "com.github.ctiao:ndkbitmap-x86:${DanmakuFlameMaster}",
+    ]
+
+    dataDependencies = [
+            videocache: "com.danikula:videocache:${videocache}",
+            leakcanary: "com.squareup.leakcanary:leakcanary-android:${leakcanary}",
+    ]
+}
